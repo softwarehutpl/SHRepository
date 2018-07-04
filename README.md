@@ -17,9 +17,9 @@ And if you are now designing your brand new `DetailsActivity` you should use the
 
 #### Params
 
-**Params** is essentially an Android `Bundle` which is stored and restored via Android `savedInstanceState` mechanisms. You only keep here the inputs for `Activity`/`Fragment`. All other stuff is handled and serialized by `SHRepository`.
+**Params** is essentially an Android `Bundle` which is stored and restored via Android `savedInstanceState` mechanisms. You only keep here the inputs for `Activity`/`Fragment`. All other stuff is handled and serialized by **SHRepository**.
 
-So your `User` goes to `SHRepository`, and your `userId`, that you used to *GET* the user goes to **Params**.
+So your `User` goes to **SHRepository**, and your `userId`, that you used to *GET* the user goes to **Params**.
 
 #### Additional features
 
@@ -79,29 +79,14 @@ You can find implementations of all elements of **KotlinMVP** there:
 
 The project handles `CustomListModel`s storage via **SHRepository**. This is done on mocked network side and DB side (courtesy of **Room DB**).
 
-#Getting Started
+# Getting Started
 Both **KotlinMVP** and **SHRepository** are deployed as libraries.
-
-As the repository that grants both libraries is private, here are the instructions and credentials necessary to add dependencies:
 
 Somewhere in your *build.gradle* file
 ```
 repositories {
-    maven {
-        url 'https://softwarehut.pkgs.visualstudio.com/_packaging/SHmaven/maven/v1'
-        credentials {
-            username "VSTS"
-            password System.getenv("VSTS_ENV_ACCESS_TOKEN") ?: "${vstsGradleAccessToken}"
-        }
-    }
+    jcenter()
 }
-```
-
-The variable *vstsGradleAccessToken* needs to be declared too. It contains the credential. 
-
-In your *gradle.properties*:
-```
-vstsGradleAccessToken=mhao722kecwtu6d4k5kgcasxf6f35eh6w4daakc7xpebv4ghx6ya
 ```
 
 ### SHRepository
@@ -116,6 +101,10 @@ implementation 'com.softwarehut:SHRepository:1.0.0'
 implementation 'com.softwarehut:KotlinMVP:1.0.0'
 ```
 
-#Build and Test
+### MvpPlayground
+
+Just clone the repo!
+
+# Build and Test
 **All projects were built in Android Studio.**
 The **MvpPlayground** needs actual Android device or Android emulator with min. **SDK version 19**.
