@@ -1,10 +1,34 @@
 apply plugin: 'com.android.library'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'maven-publish'
+
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+	}
+}
+apply plugin: 'com.jfrog.bintray'
+
+bintray {
+	user = System.getenv('BINTRAY_USER')
+	key = System.getenv('BINTRAY_KEY')
+	publications = ['myPublication']
+	pkg {
+		repo = 'SHmaven'
+		name = 'SHRepository'
+		licenses = ['Apache-2.0']
+		vcsUrl = 'https://github.com/softwarehutpl/SHRepository.git'
+
+		version {
+			name = '1.0.0'
+			released  = new Date()
+		}
+	}
+}
 
 android {
     compileSdkVersion 27
@@ -12,7 +36,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0.0-beta"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,26 +48,33 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    api "io.reactivex.rxjava2:rxjava:2.1.14-RC1"
-    testImplementation 'junit:junit:4.12'
-    testImplementation "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+	implementation 'com.android.support:appcompat-v7:27.1.1'
+	api 'io.reactivex.rxjava2:rxjava:2.1.14-RC1'
+	testImplementation 'junit:junit:4.12'
+	testImplementation 'com.nhaarman:mockito-kotlin-kt1.1:1.5.0'
+	androidTestImplementation 'com.android.support.test:runner:1.0.2'
+	androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
 repositories {
     mavenCentral()
 }
 
+
+task sourcesJar(type: Jar) {
+	from android.sourceSets.main.java.srcDirs
+	classifier = 'sources'
+}
+
 publishing {
     publications {
         myPublication(MavenPublication) {
             groupId 'com.softwarehut'
+			artifact sourcesJar
             artifactId 'SHRepository'
-            version '1.0.0-beta'
+            version '1.0.0'
             artifact './build/outputs/aar/repository-release.aar'
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -55,13 +86,6 @@ publishing {
                     dependencyNode.appendNode('version', it.version)
                 }
             }
-        }
-    }
-
-    // Repositories *to* which Gradle can publish artifacts
-    repositories {
-        maven {
-            url "$buildDir/repo"
         }
     }
 }
